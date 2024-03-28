@@ -1,5 +1,7 @@
 import React from 'react';
 import './Footer.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 export const Footer = () => {
     return (
@@ -19,14 +21,14 @@ export const Footer = () => {
                     <div className="footer-section">
                         <h3>Follow Us</h3>
                         <ul>
-                            {/* <li><a href="#">Facebook <FontAwesomeIcon icon={faFacebook} size="1x" /></a></li>
+                            <li><a href="#">Facebook <FontAwesomeIcon icon={faFacebook} size="1x" /></a></li>
                             <li><a href="#">Twitter <FontAwesomeIcon icon={faTwitter} size="1x" /></a></li>
-                            <li><a href="#">Instagram <FontAwesomeIcon icon={faInstagram} size="1x" /></a></li> */}
+                            <li><a href="#">Instagram <FontAwesomeIcon icon={faInstagram} size="1x" /></a></li>
                         </ul>
                     </div>
                 </div>
                 <div className="footer-bottom">
-                    <p>&copy; 2024 Real Estate Radar</p>
+                    <p>&copy; 2024 Lorem ipsum</p>
                 </div>
             </footer>
         </div>

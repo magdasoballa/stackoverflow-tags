@@ -1,17 +1,14 @@
 import React from 'react';
 import './Header.scss';
-import { Link } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
 
 const Header = () => {
     return (
         <div className='header'>
-            <div className='home-icon'>
-                <Link to="/">
-
-                </Link>
-            </div>
-            <h1 className="home-heading">Stack exchange</h1>
+            <Typography variant="h2" className='home-heading' >
+                Stackoverflow tags
+            </Typography>
         </div>
     );
 };

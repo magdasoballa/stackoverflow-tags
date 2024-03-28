@@ -1,0 +1,15 @@
+@import "@/scss/variables";
+
+.pagination {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media screen and (max-width: $breakpoint-sm) {
+        flex-wrap: wrap;
+    }
+    button {
+        margin: 5px;
+    }
+}

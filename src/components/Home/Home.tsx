@@ -1,20 +1,26 @@
-
-import { Button, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import { CircularProgress } from '@mui/material';
 import './Home.scss';
+import useTagStore from '../../store/store';
+import TagsTable from '../Table/TagsTable';
+import Pagination from '../Pagination/Pagination';
+import SortingOptions from '../SortingOptions/SortingOptions';
 
 const Home = () => {
-    const [tags, setTags] = useState([]);
     const [sortBy, setSortBy] = useState("name");
     const [sortDirection, setSortDirection] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
+    const { tags, loading, error, fetchTags } = useTagStore();
+
     useEffect(() => {
-        fetch(`https://api.stackexchange.com/2.3/tags?&site=stackoverflow&key=yEEc3l4ItvLA169u5hStrw((`)
-            .then(response => response.json())
-            .then(data => setTags(data.items));
-    }, []);
+        fetchTags();
+    }, [fetchTags]);
+
+    if (loading) return <div className='loader'><CircularProgress /></div>
+    if (error) return <div className='error'>Error: {error}</div>;
+    if (!tags || !Array.isArray(tags) || tags.length === 0) return <div className="empty-table">No data available</div>;
 
     const sortedTags = [...tags].sort((a, b) => {
         if (sortDirection === 'asc') {
@@ -27,11 +33,7 @@ const Home = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = sortedTags.slice(indexOfFirstItem, indexOfLastItem);
-
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(sortedTags.length / itemsPerPage); i++) {
-        pageNumbers.push(i);
-    }
+    const totalPages = Math.ceil(sortedTags.length / itemsPerPage);
 
     const handleChangeItemsPerPage = (e) => {
         setItemsPerPage(parseInt(e.target.value));
@@ -42,61 +44,21 @@ const Home = () => {
         <div className="home-container">
             <h2>Popular Tags on Stack Overflow</h2>
             <div className="sort-options">
-                <InputLabel sx={{ fontSize: '15px' }}>
-                    Sort by:
-                    <Select sx={{ height: '40px', margin: '0 10px' }} value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                        <MenuItem value="name">Tag</MenuItem>
-                        <MenuItem value="count">Post Count</MenuItem>
-                    </Select>
-                </InputLabel>
-                <InputLabel sx={{ fontSize: '15px' }}>
-                    Sort direction:
-                    <Select sx={{ height: '40px', marginLeft: '10px' }} value={sortDirection} onChange={e => setSortDirection(e.target.value)}>
-                        <MenuItem value="asc">Ascending</MenuItem>
-                        <MenuItem value="desc">Descending</MenuItem>
-                    </Select>
-                </InputLabel>
+                <SortingOptions
+                    sortBy={sortBy}
+                    sortDirection={sortDirection}
+                    setSortBy={setSortBy}
+                    setSortDirection={setSortDirection}
+                    itemsPerPage={itemsPerPage}
+                    handleChangeItemsPerPage={handleChangeItemsPerPage}
+                    tagsLength={tags.length}
+                />
             </div>
-            <div className="pagination">
-                <InputLabel sx={{ fontSize: '15px' }}>
-                    Items per page:
-                    <Select sx={{ height: '40px', marginLeft: '10px' }} value={itemsPerPage} onChange={handleChangeItemsPerPage}>
-                        <MenuItem value="5">5</MenuItem>
-                        <MenuItem value="10">10</MenuItem>
-                        <MenuItem value="20">20</MenuItem>
-                        <MenuItem value="50">50</MenuItem>
-                    </Select>
-                </InputLabel>
-            </div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Tag</TableCell>
-                        <TableCell>Post Count</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {currentItems.map(tag => (
-                        <TableRow key={tag.name}>
-                            <TableCell>{tag.name}</TableCell>
-                            <TableCell>{tag.count}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <div className="pagination">
-                <Button variant="outlined" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</Button>
-                {pageNumbers.map(number => (
-                    <Button variant="contained"
-                        key={number}
-                        sx={{ margin: '0 5px', backgroundColor: currentPage === number ? '#2196f3' : 'transparent', color: currentPage === number ? '#fff' : '#000' }}
-
-                        onClick={() => setCurrentPage(number)}
-                    >
-                        {number}
-                    </Button>
-                ))}
-                <Button variant="outlined" onClick={() => setCurrentPage(currentPage + 1)} disabled={indexOfLastItem >= sortedTags.length}>Next</Button>
+            <div className="content">
+                <>
+                    <TagsTable elements={currentItems} />
+                    <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+                </>
             </div>
         </div>
     );
