@@ -1,7 +1,7 @@
 import Pagination from "./Pagination";
 
 export const DefaultPagination = () => (
-    <Pagination currentPage={1} totalPages={10} setCurrentPage={() => { }} />
+    <Pagination currentPage={1} totalPages={3} setCurrentPage={() => { }} />
 );
 
 export const PaginationWithMorePages = () => (

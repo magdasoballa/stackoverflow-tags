@@ -17,7 +17,6 @@ const useTagStore = create<TagStore>((set: SetState<TagStore>) => ({
         try {
             const response = await fetch(`https://api.stackexchange.com/2.3/tags?&site=stackoverflow&key=${APIKEY}`);
             const data = await response.json();
-            console.log(data)
 
             set({ tags: data.items, loading: false, error: data?.error_message });
         } catch (error) {
